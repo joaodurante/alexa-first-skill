@@ -1,7 +1,7 @@
 const Alexa = require('ask-sdk-core');
-const { YesIntentHandler } = require('./intent/YesIntentHandler')
-const { AgeIntentHandler } = require('./intent/AgeIntentHandler')
-const { FallbackIntentHandler } = require('./intent/FallbackIntentHandler')
+const { YesIntentHandler } = require('./handler/intent/YesIntentHandler')
+const { AgeIntentHandler } = require('./handler/intent/AgeIntentHandler')
+const { FallbackIntentHandler } = require('./handler/intent/FallbackIntentHandler')
 const { getS3FileListSize } = require('./util') 
 
 const LaunchRequestHandler = {

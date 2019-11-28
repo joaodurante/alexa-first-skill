@@ -7,18 +7,19 @@ module.exports.mediaBuilder = async (handlerInput, token, offset, speakOutput) =
     const categoryFolder = handlerInput.attributesManager.getSessionAttributes().categoryFolder
     const url = await getS3PreSignedUrl(categoryFolder, `${token}.mp4`)
 
-    if(supportsDisplay(handlerInput)) {
+    if (supportsDisplay(handlerInput)) {
         const template = videoTemplate(url, offset)
-        
+
         return handlerInput
             .responseBuilder
             .addDirective({
                 type: 'Alexa.Presentation.APL.RenderDocument',
                 version: '1.1',
-                document: template})
+                document: template
+            })
             .speak(speakOutput)
             .getResponse()
-            
+
     } else {
         return handlerInput
             .responseBuilder

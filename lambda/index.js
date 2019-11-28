@@ -1,6 +1,6 @@
 const Alexa = require('ask-sdk-core')
 const { YesIntentHandler } = require('./handler/intent/YesIntentHandler')
-const { AgeIntentHandler } = require('./handler/intent/AgeIntentHandler')
+const { CategoryIntentHandler } = require('./handler/intent/CategoryIntentHandler')
 const { PlayVideoIntentHandler } = require('./handler/intent/PlayVideoIntentHandler')
 const { PauseVideoIntentHandler } = require('./handler/intent/PauseVideoIntentHandler')
 const { RestartVideoIntentHandler } = require('./handler/intent/RestartVideoIntentHandler')
@@ -25,13 +25,13 @@ const LaunchRequestHandler = {
         sessionAttributes.status = 'start'
         
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes)
-        const speakOutput = 'Olá, bem vindo ao Trailer de Filmes, gostaria de assistir à um trailer?';
+        const speakOutput = 'Bem vindo, trailer de qual categoria você gostaria de assistir?';
         
         if(supportsDisplay(handlerInput)) {
             const display = await launchDisplay()
             return handlerInput.responseBuilder
                 .speak(speakOutput)
-                .reprompt('Gostaria de assistir à um trailer?')
+                .reprompt('Gostaria de assistir trailers de qual categoria?')
                 .addDirective({
                     type: 'Alexa.Presentation.APL.RenderDocument',
                     version: '1.1',
@@ -54,7 +54,7 @@ const HelpIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Diga sim para assistir um trailer, você pode pausar e resumir, pedir o próximo ou o trailer anterior. Ao final do trailer pode repetí-lo';
+        const speakOutput = 'Diga a categoria que deseja, você pode mudá-la a qualquer momento, você também pode pausar e resumir o trailer, pedir o próximo ou o trailer anterior. Ao final do trailer pode repetí-lo';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -109,7 +109,7 @@ const ErrorHandler = {
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
-        AgeIntentHandler,
+        CategoryIntentHandler,
         YesIntentHandler,
         PlayVideoIntentHandler,
         PauseVideoIntentHandler,

@@ -36,6 +36,7 @@ module.exports.PauseVideoIntentHandler = {
                     .speak('Pausando')
                     .getResponse()
             }
+
         } else {
             return handlerInput.responseBuilder
                 .speak('Você não pode fazer isso agora')

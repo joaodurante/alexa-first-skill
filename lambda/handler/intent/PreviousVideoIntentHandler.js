@@ -18,7 +18,7 @@ module.exports.PreviousVideoIntentHandler = {
                 
             handlerInput.attributesManager.setSessionAttributes(sessionAttributes)
             
-            const speakOutput = 'Reproduzindo trailer anterior'
+            const speakOutput = 'Reproduzindo o trailer anterior'
             return mediaBuilder(handlerInput, sessionAttributes.videoCounter, 0, speakOutput)
             
         } else {

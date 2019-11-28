@@ -1,20 +1,25 @@
 const AWS = require('aws-sdk');
 const { config } = require('./common/config')
+const { s3Config } = require('./common/s3Config')
 
-const s3 = new AWS.S3({
-    region: 'sa-east-1',
-    accessKeyId: config.ACCESS_KEY,
-    secretAccessKey: config.SECRET_KEY,
-    Bucket: config.BUCKET,
-    signatureVersion: 'v4',
-    apiVersion: '2012-10-17'
-});
+const s3 = new AWS.S3(s3Config);
 
-module.exports.getS3PreSignedUrl = async (key) => {
+// Return trailer url
+module.exports.getS3PreSignedUrl = async (categoryFolder, key) => {
     const s3PreSignedUrl = await s3.getSignedUrl('getObject', {
         Bucket: config.BUCKET,
-        Key: `${config.FOLDER}${key}`
+        Key: config.FOLDER + categoryFolder + key
     })
-    console.log(`*URL* ${s3PreSignedUrl}`);
     return s3PreSignedUrl;
+}
+
+// Return number of trailers in s3 folder 
+module.exports.getTrailersNumber = async (folder) => {
+    const list = await s3.listObjectsV2({
+        Bucket: config.BUCKET,
+        Prefix: config.FOLDER + folder,
+        Delimiter: '/'
+    }).promise()
+        
+    return (list.KeyCount-1)
 }

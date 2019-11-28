@@ -9,8 +9,7 @@ module.exports.YesIntentHandler = {
     },
     async handle(handlerInput) {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-
-        if (sessionAttributes.age) {                                                                // Start video if age is defined, else ask the age
+        if (sessionAttributes.categoryFolder) {                                                     // Start video if age is defined, else ask the age
             if (sessionAttributes.videoCounter !== undefined
                 && sessionAttributes.videoCounter < sessionAttributes.videoListSize - 1)            // When videoCounter > videoListSize -> videoCounter reset
                 sessionAttributes.videoCounter++
@@ -24,11 +23,11 @@ module.exports.YesIntentHandler = {
             return mediaBuilder(handlerInput, sessionAttributes.videoCounter, 0, speakOutput)       // Call mediaBuilder and return its value
 
         } else {
-            const speakOutput = 'Por favor, informe a sua idade'
+            const speakOutput = 'Por favor, informe a categoria desejada'
             return handlerInput
                 .responseBuilder
                 .speak(speakOutput)
-                .reprompt('Qual a sua idade?')
+                .reprompt('Qual a categoria desejada?')
                 .getResponse();
         }
     }

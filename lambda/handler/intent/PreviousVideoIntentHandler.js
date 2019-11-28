@@ -12,7 +12,7 @@ module.exports.PreviousVideoIntentHandler = {
         
         if(sessionAttributes.status === 'play') {
             if(sessionAttributes.videoCounter === 0)
-                sessionAttributes.videoCounter = config.LIST_SIZE-1
+                sessionAttributes.videoCounter = sessionAttributes.videoListSize-1
             else
                 sessionAttributes.videoCounter--
                 

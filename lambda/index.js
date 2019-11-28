@@ -1,8 +1,16 @@
-const Alexa = require('ask-sdk-core');
+const Alexa = require('ask-sdk-core')
 const { YesIntentHandler } = require('./handler/intent/YesIntentHandler')
 const { AgeIntentHandler } = require('./handler/intent/AgeIntentHandler')
+const { PlayVideoIntentHandler } = require('./handler/intent/PlayVideoIntentHandler')
+const { PauseVideoIntentHandler } = require('./handler/intent/PauseVideoIntentHandler')
+const { RestartVideoIntentHandler } = require('./handler/intent/RestartVideoIntentHandler')
+const { PreviousVideoIntentHandler } = require('./handler/intent/PreviousVideoIntentHandler')
 const { FallbackIntentHandler } = require('./handler/intent/FallbackIntentHandler')
+const { VideoEndEventHandler } = require('./handler/event/VideoEndEventHandler')
 const { getS3FileListSize } = require('./util') 
+const { config } = require('./common/config')
+const { supportsDisplay } = require('./common/supportsDisplay')
+const { launchDisplay } = require('./view/launchDisplay')
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -11,15 +19,32 @@ const LaunchRequestHandler = {
     async handle(handlerInput) {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
         
-        sessionAttributes.videoListSize = await getS3FileListSize()
-        console.log("SIZE: " + sessionAttributes.videoListSize)
+        // Set videoListSize
+        sessionAttributes.videoListSize = config.LIST_SIZE
+        
+        // Set status to start
+        sessionAttributes.status = 'start'
         
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes)
-        const speakOutput = 'Olá, quantos anos você tem?';
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
-            .getResponse();
+        const speakOutput = 'Olá, bem vindo ao Trailer de Filmes, gostaria de assistir à um trailer?';
+        
+        if(supportsDisplay(handlerInput)) {
+            const display = await launchDisplay()
+            return handlerInput.responseBuilder
+                .speak(speakOutput)
+                .reprompt('Gostaria de assistir à um trailer?')
+                .addDirective({
+                    type: 'Alexa.Presentation.APL.RenderDocument',
+                    version: '1.1',
+                    document: display
+                })
+                .getResponse();
+        }else {
+            return handlerInput.responseBuilder
+                .speak(speakOutput)
+                .reprompt(speakOutput)
+                .getResponse();
+        }
     }
 };
 
@@ -30,7 +55,7 @@ const HelpIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Quantos anos você tem?';
+        const speakOutput = 'Diga sim para assistir um trailer, você pode pausar e resumir, pedir o próximo ou o trailer anterior. Ao final do trailer pode repetí-lo';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -41,15 +66,15 @@ const HelpIntentHandler = {
 
 const CancelAndStopIntentHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.CancelIntent'
-                || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
-    },
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest' 
+            && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent' 
+            || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
+    }
+,
     handle(handlerInput) {
         const speakOutput = 'Até mais!';
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .addAudioPlayerStopDirective()
             .withShouldEndSession(true)
             .getResponse();
     }
@@ -62,7 +87,6 @@ const SessionEndedRequestHandler = {
     handle(handlerInput) {
         return handlerInput
             .responseBuilder
-            .addAudioPlayerStopDirective()
             .withShouldEndSession(true)
             .getResponse();
     }
@@ -88,6 +112,11 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         AgeIntentHandler,
         YesIntentHandler,
+        PlayVideoIntentHandler,
+        PauseVideoIntentHandler,
+        RestartVideoIntentHandler,
+        PreviousVideoIntentHandler,
+        VideoEndEventHandler,
         HelpIntentHandler,
         FallbackIntentHandler,
         CancelAndStopIntentHandler,

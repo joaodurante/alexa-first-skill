@@ -7,7 +7,7 @@ const s3 = new AWS.S3({
     secretAccessKey: config.SECRET_KEY,
     Bucket: config.BUCKET,
     signatureVersion: 'v4',
-    apiVersion: '2006-03-01'
+    apiVersion: '2012-10-17'
 });
 
 module.exports.getS3PreSignedUrl = async (key) => {
@@ -17,14 +17,4 @@ module.exports.getS3PreSignedUrl = async (key) => {
     })
     console.log(`*URL* ${s3PreSignedUrl}`);
     return s3PreSignedUrl;
-}
-
-module.exports.getS3FileListSize = async () => {
-    const list = await s3.listObjectsV2({
-        Bucket: config.BUCKET,
-        Prefix: config.FOLDER,
-        Delimiter: '/'
-    }).promise()
-    console.log(list.Contents.length)
-    return list.Contents.length
 }

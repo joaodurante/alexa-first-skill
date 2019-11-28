@@ -4,13 +4,6 @@ module.exports.videoTemplate = (url, time) => {
         "version": "1.1",
         "settings": {},
         "theme": "dark",
-        "import": [],
-        "resources": [],
-        "styles": {},
-        "onMount": [],
-        "graphics": {},
-        "commands": {},
-        "layouts": {},
         "mainTemplate": {
             "parameters": [
                 "payload"
@@ -26,6 +19,10 @@ module.exports.videoTemplate = (url, time) => {
                         "offset": time,
                         "url": url
                     }],
+                    "onEnd": {
+                        "type": "SendEvent",
+                        "arguments": ["videoend"]
+                    },
                     "id": "video"
                 }]
             }]

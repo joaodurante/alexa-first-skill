@@ -8,17 +8,16 @@ module.exports.PlayVideoIntentHandler = {
     },
     async handle(handlerInput) {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-        console.log('LOGLOGLOG' + handlerInput.requestEnvelope.context.AudioPlayer.playerActivity)
+
         if(sessionAttributes.status === 'pause'){
             if (supportsDisplay(handlerInput)) {
-                    // STATUS = play -> alexa is playing the trailer
-                    sessionAttributes.status = 'play'
+                    sessionAttributes.status = 'play'                                           // STATUS = play -> alexa is playing the trailer
                     handlerInput.attributesManager.setSessionAttributes(sessionAttributes)
                     return handlerInput
                         .responseBuilder
                         .addDirective({
                             type: 'Alexa.Presentation.APL.ExecuteCommands',
-                            version: '1.2',
+                            version: '1.1',
                             token: 'VideoPlayerToken',
                             commands: [{
                                 type: "ControlMedia",
@@ -29,7 +28,7 @@ module.exports.PlayVideoIntentHandler = {
                         .speak('Resumindo')
                         .getResponse();
                 } else {
-                    console.log(handlerInput.requestEnvelope.context.AudioPlayer.playerActivity)
+                    console.log('Nao suporta')
                 }
         } else {
             return handlerInput

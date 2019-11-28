@@ -1,5 +1,4 @@
 const Alexa = require('ask-sdk-core')
-const { getS3PreSignedUrl } = require('../../util')
 const { config } = require('../../common/config')
 const { mediaBuilder } = require('../../common/mediaBuilder')
 
@@ -19,9 +18,8 @@ module.exports.PreviousVideoIntentHandler = {
                 
             handlerInput.attributesManager.setSessionAttributes(sessionAttributes)
             
-            const url = await getS3PreSignedUrl(`${sessionAttributes.videoCounter}.mp4`)
-            
-            return mediaBuilder(handlerInput, url)
+            const speakOutput = 'Reproduzindo trailer anterior'
+            return mediaBuilder(handlerInput, sessionAttributes.videoCounter, 0, speakOutput)
             
         } else {
             const speakOutput = 'Você não pode fazer isso agora'

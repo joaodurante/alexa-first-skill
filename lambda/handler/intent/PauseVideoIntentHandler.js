@@ -8,11 +8,10 @@ module.exports.PauseVideoIntentHandler = {
     },
     async handle(handlerInput) {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
-        console.log('LOGLOGLOG' + handlerInput.requestEnvelope.context.AudioPlayer.playerActivity)
-        
-        if(sessionAttributes.status === 'play') {
+
+        if (sessionAttributes.status === 'play') {
             if (supportsDisplay(handlerInput)) {
-                
+
                 // STATUS = pause -> alexa paused a trailer
                 sessionAttributes.status = 'pause'
                 handlerInput.attributesManager.setSessionAttributes(sessionAttributes)
@@ -29,15 +28,18 @@ module.exports.PauseVideoIntentHandler = {
                         }]
                     })
                     .speak('Pausando')
-                    .getResponse();
+                    .getResponse()
+
             } else {
-                console.log(handlerInput.requestEnvelope.context.AudioPlayer.playerActivity)
+                return handlerInput.responseBuilder
+                    .addAudioPlayerStopDirective()
+                    .speak('Pausando')
+                    .getResponse()
             }
         } else {
-        return handlerInput
-            .responseBuilder
-            .speak('Você não pode fazer isso agora')
-            .getResponse()
+            return handlerInput.responseBuilder
+                .speak('Você não pode fazer isso agora')
+                .getResponse()
         }
     }
 }

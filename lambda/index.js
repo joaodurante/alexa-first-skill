@@ -7,7 +7,6 @@ const { RestartVideoIntentHandler } = require('./handler/intent/RestartVideoInte
 const { PreviousVideoIntentHandler } = require('./handler/intent/PreviousVideoIntentHandler')
 const { FallbackIntentHandler } = require('./handler/intent/FallbackIntentHandler')
 const { VideoEndEventHandler } = require('./handler/event/VideoEndEventHandler')
-const { getS3FileListSize } = require('./util') 
 const { config } = require('./common/config')
 const { supportsDisplay } = require('./common/supportsDisplay')
 const { launchDisplay } = require('./view/launchDisplay')

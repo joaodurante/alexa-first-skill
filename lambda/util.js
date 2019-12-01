@@ -1,8 +1,8 @@
-const AWS = require('aws-sdk');
+const AWS = require('aws-sdk')
 const { config } = require('./common/config')
 const { s3Config } = require('./common/s3Config')
 
-const s3 = new AWS.S3(s3Config);
+const s3 = new AWS.S3(s3Config)
 
 // Return trailer url
 module.exports.getS3PreSignedUrl = async (categoryFolder, key) => {

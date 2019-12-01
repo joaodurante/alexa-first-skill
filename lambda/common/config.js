@@ -3,14 +3,13 @@ module.exports.config = {
     FOLDER: 'test-skill/',
     CATEGORIES: [
         {
-            name: 'aventura',
-            folder: 'aventura/'
+            name: 'aventura'
         }, {
-            name: 'drama',
-            folder: 'drama/'
+            name: 'drama'
         }, {
-            name: 'terror',
-            folder: 'terror/'
+            name: 'terror'
+        }, {
+            name: 'animação'
         }
     ],
     TEMPLATE_FOLDER: 'test-skill/template/'

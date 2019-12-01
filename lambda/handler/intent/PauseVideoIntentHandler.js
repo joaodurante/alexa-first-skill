@@ -8,15 +8,17 @@ module.exports.PauseVideoIntentHandler = {
     },
     async handle(handlerInput) {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
+        const speakOutput = 'Pausando'
 
         if (sessionAttributes.status === 'play') {
             if (supportsDisplay(handlerInput)) {
-
+                console.log('SUPPORTS')
                 // STATUS = pause -> alexa paused a trailer
                 sessionAttributes.status = 'pause'
                 handlerInput.attributesManager.setSessionAttributes(sessionAttributes)
                 return handlerInput
                     .responseBuilder
+                    .speak(speakOutput)
                     .addDirective({
                         type: 'Alexa.Presentation.APL.ExecuteCommands',
                         version: '1.2',
@@ -27,14 +29,15 @@ module.exports.PauseVideoIntentHandler = {
                             command: "pause"
                         }]
                     })
-                    .speak('Pausando')
                     .getResponse()
 
             } else {
+                console.log('PAUSE INTENT')
                 return handlerInput.responseBuilder
-                    .addAudioPlayerStopDirective()
-                    .speak('Pausando')
-                    .getResponse()
+                        .addAudioPlayerStopDirective()
+                        .withShouldEndSession(true)
+                        .speak(speakOutput)
+                        .getResponse()
             }
 
         } else {

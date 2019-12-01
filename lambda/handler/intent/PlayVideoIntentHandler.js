@@ -1,5 +1,6 @@
 const Alexa = require('ask-sdk-core')
 const { supportsDisplay } = require('../../common/supportsDisplay')
+const { mediaBuilder } = require('../../common/mediaBuilder')
 
 module.exports.PlayVideoIntentHandler = {
     canHandle(handlerInput) {
@@ -8,6 +9,7 @@ module.exports.PlayVideoIntentHandler = {
     },
     async handle(handlerInput) {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes()
+        const speakOutput = 'Continuando'
 
         if(sessionAttributes.status === 'pause'){
             if (supportsDisplay(handlerInput)) {
@@ -15,6 +17,7 @@ module.exports.PlayVideoIntentHandler = {
                     handlerInput.attributesManager.setSessionAttributes(sessionAttributes)
                     return handlerInput
                         .responseBuilder
+                        .speak(speakOutput)
                         .addDirective({
                             type: 'Alexa.Presentation.APL.ExecuteCommands',
                             version: '1.1',
@@ -25,11 +28,14 @@ module.exports.PlayVideoIntentHandler = {
                                 command: "play"
                             }]
                         })
-                        .speak('Resumindo')
-                        .getResponse();
+                        .getResponse()
+                        
                 } else {
-                    console.log('Nao suporta')
+                    const offset = handlerInput.requestEnvelope.context.AudioPlayer.offsetInMilliseconds
+                    console.log('Audio player - Token: ' + sessionAttributes.videoCounter + ' - Offset: ' + offset)
+                    mediaBuilder(handlerInput, sessionAttributes.videoCounter, offset, speakOutput)
                 }
+                
         } else {
             return handlerInput
                 .responseBuilder
